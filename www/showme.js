@@ -37,6 +37,10 @@ function showme_init(uri){
 
 function showme_loadjson_uri(uri){
 
+	if (extents[uri]){
+		return;
+	}
+
 	var js_tiles = org.polymaps.geoJson();
 	js_tiles.url(uri);
 
