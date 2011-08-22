@@ -135,6 +135,14 @@ function showme_onloadjson(geojson, uid, set_extent){
 			}
 		}
 
+		else if (data.geometry.type == 'Point'){
+			var coord = data.geometry.coordinates;
+			swlat = (swlat) ? Math.min(swlat, coord[1]) : coord[1];
+			swlon = (swlon) ? Math.min(swlon, coord[0]) : coord[0];
+			nelat = (nelat) ? Math.max(nelat, coord[1]) : coord[1];
+			nelon = (nelon) ? Math.max(nelon, coord[0]) : coord[0];
+		}
+
 		else {
 			console.log("unsupported type");
 			continue;
