@@ -1,0 +1,27 @@
+{
+	"type": "FeatureCollection",
+	"properties" : {},
+	"features" : [
+		{
+			"type": "Feature",
+			"geometry": {
+				"type" : "Polygon",
+				"coordinates" : [[
+					[-122.408, 37.785], [-122.408, 37.800], [-122.392, 37.800], [-122.392, 37.785], [-122.408, 37.785]
+				]]
+			},
+			"properties": { "name": "Financial District", "woeid": 23512022 }
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type" : "Polygon",
+				"coordinates" : [[
+					[-122.433, 37.781], [-122.433, 37.789], [-122.423, 37.789], [-122.423, 37.781], [-122.433, 37.781]
+				]]
+			},
+			"properties": { "name": "Little Osaka", "woeid": 2440289 }
+		}
+
+	]
+}

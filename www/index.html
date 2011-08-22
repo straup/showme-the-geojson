@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<title>Show me the GeoJSON</title>
+		<script type="text/javascript" src="polymaps.min.js"></script>
+		<script type="text/javascript" src="showme.js"></script>
+		<link rel="stylesheet" type="text/css" href="showme.css" />
+	</head>
+	<body onload="showme_init('test.geojson');">
+		<div id="map"></div>
+		<div id="sidebar">
+			<form onsubmit="showme_loadform();return false;">
+			<!-- read local files here, waiting to figure out why geojson.features() wigs out... -->
+			<input type="text" id="fetchuri" />
+			<input type="submit" value="FETCH" />
+			</form>
+			<div id="properties"></div>
+			<div id="extents"></div>
+		</div>
+	</body>
+</html>
