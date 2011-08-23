@@ -306,20 +306,28 @@ function showme_hide_properties(){
 function showme_loadform(){
 
 	var uri = document.getElementById("fetchuri");
+	var file = document.getElementById("fetchfile");
 
-	if (uri){
-		uri = uri.value;
+	if (uri.value){
 
-		if (uri.indexOf("http://") == 0){
+		if (uri.value.indexOf("http://") == 0){
 			showme_loadjson_uri(uri);
 			return;
 		}
+
+		alert("Invalid URL!");
+		return;
 	}
 
-	alert("Invalid URL!");
+	if (file.files.length){
+		showme_loadfiles(file.files);
+		return;
+	}
+
+	alert('Missing data!');
 }
 
-function showme_loadfile(files){
+function showme_loadfiles(files){
 
 	var count = files.length;
 
