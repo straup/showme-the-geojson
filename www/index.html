@@ -9,10 +9,12 @@
 	<body onload="showme_init('test.json');">
 		<div id="map"></div>
 		<div id="sidebar">
-			<form onsubmit="showme_formhandler();return false;">
-			<input type="file" id="fetchfile" /><br />
-			<input type="text" id="fetchuri" /> URL<br />
-			<input type="submit" value="LOAD" />
+			<form onsubmit="showme_formhandler();return false;" id="loadfiles">
+			<label for="fetchfile">load a document from your computer</label><br />
+			<input type="file" id="fetchfile" size="40" /><br /><br />
+			<label for="fetchuri">load a document from the web</label><br />
+			<input type="text" id="fetchuri" size="50" /><br /><br />
+			<input type="submit" value="LOAD"/>
 			</form>
 			<div id="extents"></div>
 			<div id="properties"></div>

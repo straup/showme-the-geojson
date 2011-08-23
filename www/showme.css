@@ -103,3 +103,14 @@ svg {
 .properties li {
 	line-height: 25px;
 }
+
+#loadfiles {
+    display:block;
+    margin-bottom: 50px;
+}
+
+input[type=submit] {
+    border: solid thin;
+    display:block;
+    float:right;
+}

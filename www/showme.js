@@ -326,19 +326,20 @@ function showme_formhandler(){
 
 		if (uri.value.indexOf("http://") == 0){
 			showme_loadjson_uri(uri.value);
+
+			uri.value = '';
 			return;
 		}
 
 		alert("Invalid URL!");
-		return;
 	}
 
 	if (file.files.length){
 		showme_loadfiles(file.files);
+
+		file.value = '';
 		return;
 	}
-
-	alert('Missing data!');
 }
 
 function showme_loadfiles(files){
