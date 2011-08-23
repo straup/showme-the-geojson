@@ -2,10 +2,11 @@
 	<head>
 		<title>Show me the GeoJSON</title>
 		<script type="text/javascript" src="polymaps.min.js"></script>
+		<script type="text/javascript" src="md5.js"></script>
 		<script type="text/javascript" src="showme.js"></script>
 		<link rel="stylesheet" type="text/css" href="showme.css" />
 	</head>
-	<body onload="showme_init('test.geojson');">
+	<body onload="showme_init('cities-mapnik.json');">
 		<div id="map"></div>
 		<div id="sidebar">
 			<form onsubmit="showme_loadform();return false;">

@@ -67,7 +67,7 @@ function showme_loadjson_features(features){
 	var js_tiles = org.polymaps.geoJson();
 	js_tiles.features(features);
 
-	var uri = 'md5 features here';
+	var uri = hex_md5(JSON.stringify(features));
 	var set_extent = 1;
 
 	js_tiles.on('load', function(e){
@@ -151,12 +151,14 @@ function showme_onloadjson(geojson, uid, set_extent){
 		properties[uid][i] = data.properties;
 
 		var pid = uid + "#" + i;
+		var hex = hex_md5(pid);
 
 		var el = feature.element;
 		el.setAttribute('onmouseover', 'showme_show_properties("' + pid + '");');
-		el.setAttribute('onmouseout', 'showme_hide_properties();');
+		// el.setAttribute('onmouseout', 'showme_hide_properties();');
 
 		el.setAttribute('class', data.geometry.type.toLowerCase());
+		el.setAttribute('id', hex);
 	}
 
 	var extent = [
@@ -249,6 +251,26 @@ function showme_jumpto(uid){
 }
 
 function showme_show_properties(pid){
+
+	var active = document.getElementsByClassName('geom-active');
+	var count_active = active.length;
+
+	for (var i=0; i < count_active; i++){
+		var el = active[i];
+		var classes = el.getAttribute('class');
+		classes = classes.replace("geom-active", "");
+		classes = classes.trim();
+		el.setAttribute('class', classes);
+	}
+
+	var hex = hex_md5(pid);
+	var geom = document.getElementById(hex);
+
+	var classes = geom.getAttribute('class');
+	classes += ' geom-active';
+
+	geom.setAttribute('class', classes);
+
 	var parts = pid.split("#");
 	var uid = parts[0];
 	var idx = parts[1];
@@ -270,6 +292,8 @@ function showme_show_properties(pid){
 	header.appendChild(document.createTextNode(uid + ', item #' + (Number(idx) + 1)));
 
 	var props = document.getElementById("properties");
+	props.innerHTML = '';
+
 	props.appendChild(header);
 	props.appendChild(ul);
 }

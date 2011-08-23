@@ -35,6 +35,11 @@ svg {
 	stroke: yellow;
 }
 
+.geom-active {
+    fill: red;
+    z-index:100;
+}
+
 #sidebar {
     position: absolute; left: 65%; top: 0px;
     margin:25px;
