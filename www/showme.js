@@ -43,38 +43,57 @@ function showme_loadjson_uri(uri){
 	var js_tiles = org.polymaps.geoJson();
 	js_tiles.url(uri);
 
-	var set_extent = 1;
-
-	js_tiles.on('load', function(e){
-		showme_onloadjson(e, uri, set_extent);
-
-		if (set_extent){
-			showme_list_extents();
-		}
-
-		set_extent = 0;
-	});
+	var onload = showme_onload(uri);
+	js_tiles.on('load', onload());
 
 	map.add(js_tiles);
 }
 
-function showme_loadjson_features(features){
+// this doesn't work for reasons I don't understand...
 
-	// something is wrong here...
-	return;
+function showme_loadjson_features(features, uri){
+
+	if (! uri){
+		uri = hex_md5(JSON.stringify(features));
+	}
+
+	if (extents[uri]){
+		return;
+	}
 
 	var js_tiles = org.polymaps.geoJson();
 	js_tiles.features(features);
 
-	var uri = hex_md5(JSON.stringify(features));
-	var set_extent = 1;
+	// specifically, whenever this is triggered it seems
+	// to launch itself in to a spiral death march calling
+	// itself over and over and over again; this does not
+	// happen fetch remote URLs...
 
-	js_tiles.on('load', function(e){
-		showme_onloadjson(e, uri, set_extent);
-		set_extent = 0;
-	});
+	var onload = showme_onload(uri);
+	js_tiles.on('load', onload());
 
 	map.add(js_tiles);
+}
+
+function showme_onload(uri){
+
+	return function(){
+
+		// only set the extent of the geojson features once...
+		var set_extent = 1;
+
+		return function(e){
+
+			showme_onloadjson(e, uri, set_extent);
+
+			if (set_extent){
+				showme_list_extents();
+			}
+
+			set_extent = 0;
+		}
+	}
+
 }
 
 function showme_onloadjson(geojson, uid, set_extent){
@@ -103,7 +122,6 @@ function showme_onloadjson(geojson, uid, set_extent){
 		}
 
 		else if (data.geometry.type == 'Polygon'){
-
 			var coords = data.geometry.coordinates[0];
 			var count_coords = coords.length;
 
@@ -165,7 +183,7 @@ function showme_onloadjson(geojson, uid, set_extent){
 		{lat: nelat, lon: nelon},
 	];
 
-	extents[uid] = extent;
+	extents[ uid ] = extent;
 
 	if (set_extent){
 
@@ -174,24 +192,16 @@ function showme_onloadjson(geojson, uid, set_extent){
 		}
 
 		else {
+
 			map_extent[0]['lat'] = Math.min(map_extent[0]['lat'], extent[0]['lat']);
 			map_extent[0]['lon'] = Math.min(map_extent[0]['lon'], extent[0]['lon']);
 			map_extent[1]['lat'] = Math.max(map_extent[1]['lat'], extent[1]['lat']);
 			map_extent[1]['lon'] = Math.max(map_extent[1]['lon'], extent[1]['lon']);
 		}
 
-		// for now, just always jump to the most recent thing...
-
-		try {
-			map.extent(extent);
-			map.zoom(Math.floor(map.zoom()));
-		}
-
-		catch(e){
-			alert('Failed to set map extent! ' + e);
-		}
+		map.extent(extent);
+		map.zoom(Math.floor(map.zoom()));
 	}
-
 }
 
 function showme_list_extents(){
@@ -202,7 +212,6 @@ function showme_list_extents(){
 	var counter = 0;
 
 	for (var uid in extents){
-		// var value = extents[uid];
 
 		var li = document.createElement('li');
 		var a = document.createElement('a');
@@ -241,6 +250,8 @@ function showme_list_extents(){
 }
 
 function showme_jumpto(uid){
+
+	showme_hide_properties();
 
 	if ((! uid) || (! extents[uid])){
 		map.extent(map_extent);
@@ -331,13 +342,24 @@ function showme_loadform(){
 
 function showme_loadfiles(files){
 
-	var count = files.length;
+		var file = files[0];
 
-	for (var i=0; i < count; i++){
-		var file = files[i];
+	// see notes in showme_loadjson_features;
+	// this works in FF an Safari...
+
+	try {
+		showme_loadjson_uri(file.name);
+	}
+
+	catch (e){
+		alert(e);
+	}
+
+	// see notes in showme_loadjson_features
+	return;
 
 		if (file.type != 'application/json'){
-			continue;
+			return;
 		}
 
 		var geojson = file.getAsBinary();
@@ -348,9 +370,8 @@ function showme_loadfiles(files){
 
 		catch(e) {
 			console.log(e);
-			continue;
+			return;
 		}
 
-		showme_loadjson_features(geojson.features);
-	}
+	showme_loadjson_features(geojson.features, file.name);
 }
