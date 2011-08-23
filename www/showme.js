@@ -311,7 +311,7 @@ function showme_loadform(){
 	if (uri.value){
 
 		if (uri.value.indexOf("http://") == 0){
-			showme_loadjson_uri(uri);
+			showme_loadjson_uri(uri.value);
 			return;
 		}
 
