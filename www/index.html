@@ -6,16 +6,20 @@
 		<script type="text/javascript" src="showme.js"></script>
 		<link rel="stylesheet" type="text/css" href="showme.css" />
 	</head>
-	<body onload="showme_init('test.json');">
+	<body onload="showme_init();">
 		<div id="map"></div>
 		<div id="sidebar">
-			<form onsubmit="showme_formhandler();return false;" id="loadfiles">
+			<h3 id="load_header" onclick="toggle_form();">load a new document</h3>
+			<div id="load_form">
+			<form onsubmit="showme_formhandler();return false;">
 			<label for="fetchfile">load a document from your computer</label><br />
 			<input type="file" id="fetchfile" size="40" /><br /><br />
 			<label for="fetchuri">load a document from the web</label><br />
 			<input type="text" id="fetchuri" size="50" /><br /><br />
-			<input type="submit" value="LOAD"/>
+			<input type="submit" onclick="toggle_form('close'); return false;" value="OR NOT..."/>
+			<input type="submit" value="SHOW ME NOW!"/>
 			</form>
+			</div>
 			<div id="extents"></div>
 			<div id="properties"></div>
 		</div>

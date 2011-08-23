@@ -36,6 +36,8 @@ function showme_init(uri){
 
 function showme_loadjson_uri(uri){
 
+	toggle_form('close');
+
 	if (extents[uri]){
 		return;
 	}
@@ -124,6 +126,7 @@ function showme_onloadjson(geojson, uid, set_extent){
 		}
 
 		else if (data.geometry.type == 'Polygon'){
+            console.log(data);
 			var coords = data.geometry.coordinates[0];
 			var count_coords = coords.length;
 
@@ -385,4 +388,13 @@ function showme_loadfiles(files){
 	}
 
 	showme_loadjson_features(geojson.features, file.name);
+}
+
+function toggle_form(close){
+
+	var h = document.getElementById("load_header");
+	h.style.display = (close) ? 'block' : 'none';
+
+	var f = document.getElementById("load_form");
+	f.style.display = (close) ? 'none' : 'block';
 }
