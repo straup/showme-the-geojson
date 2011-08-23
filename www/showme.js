@@ -1,5 +1,4 @@
-var map;
-
+var map = null;
 var map_extent = null;
 
 var extents = {};
@@ -185,6 +184,7 @@ function showme_onloadjson(geojson, uid, set_extent){
 
 		try {
 			map.extent(extent);
+			map.zoom(Math.floor(map.zoom()));
 		}
 
 		catch(e){
@@ -244,10 +244,12 @@ function showme_jumpto(uid){
 
 	if ((! uid) || (! extents[uid])){
 		map.extent(map_extent);
+		map.zoom(Math.floor(map.zoom()));
 		return;
 	}
 
 	map.extent(extents[uid]);
+	map.zoom(Math.floor(map.zoom()));
 }
 
 function showme_show_properties(pid){

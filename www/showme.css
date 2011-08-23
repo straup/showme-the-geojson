@@ -4,9 +4,26 @@ body {
 	font-family: sans-serif;
 }
 
+#map {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 58%;
+	border-right: 5px solid #000;
+}
+
+#sidebar {
+    position: absolute;
+    top: 0;
+    left: 60%;
+    margin:25px;
+    font-size: small;
+}
+
 svg {
 	height: 100%;
-	width: 65%;
+	width: 100%;
 }
 
 .polygon {
@@ -38,13 +55,6 @@ svg {
 .geom-active {
     fill: red;
     z-index:100;
-}
-
-#sidebar {
-    position: absolute; left: 65%; top: 0px;
-    margin:25px;
-
-    height:90%;
 }
 
 .compass .back {
@@ -85,6 +95,9 @@ svg {
 
 .compass.active .active .direction {
   fill: #999;
+}
+
+#properties {
 }
 
 .properties li {
