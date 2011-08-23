@@ -221,7 +221,16 @@ function showme_list_extents(){
 		a.appendChild(txt);
 		a.setAttribute('onclick', 'showme_jumpto("' + uid + '");');
 
+		var bbox = extents[ uid ];
+		bbox = [ bbox[0].lat, bbox[0].lon, bbox[1].lat, bbox[1].lon ];
+
+		var div = document.createElement('div');
+		div.setAttribute('class', 'bbox');
+		div.appendChild(document.createTextNode(bbox.join(', ')));
+
 		li.appendChild(a);
+		li.appendChild(div);
+
 		ul.appendChild(li);
 
 		counter ++;

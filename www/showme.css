@@ -114,3 +114,9 @@ input[type=submit] {
     display:block;
     float:right;
 }
+
+.bbox {
+    font-size: 11px;
+    color: #ccc;
+    font-style: italic;
+}
