@@ -98,6 +98,8 @@ function showme_onload(uri){
 
 function showme_onloadjson(geojson, uid, set_extent){
 
+	// check for extents[uid] here...
+
 	if (! properties[uid]){
 		properties[uid] = new Array();
 	}
@@ -172,7 +174,6 @@ function showme_onloadjson(geojson, uid, set_extent){
 
 		var el = feature.element;
 		el.setAttribute('onmouseover', 'showme_show_properties("' + pid + '");');
-		// el.setAttribute('onmouseout', 'showme_hide_properties();');
 
 		el.setAttribute('class', data.geometry.type.toLowerCase());
 		el.setAttribute('id', hex);
@@ -316,7 +317,7 @@ function showme_hide_properties(){
 	props.innerHTML = '';
 }
 
-function showme_loadform(){
+function showme_formhandler(){
 
 	var uri = document.getElementById("fetchuri");
 	var file = document.getElementById("fetchfile");
@@ -358,20 +359,20 @@ function showme_loadfiles(files){
 	// see notes in showme_loadjson_features
 	return;
 
-		if (file.type != 'application/json'){
-			return;
-		}
+	if (file.type != 'application/json'){
+		return;
+	}
 
-		var geojson = file.getAsBinary();
+	var geojson = file.getAsBinary();
 
-		try {
-			geojson = JSON.parse(geojson);
-		}
+	try {
+		geojson = JSON.parse(geojson);
+	}
 
-		catch(e) {
-			console.log(e);
-			return;
-		}
+	catch(e) {
+		console.log(e);
+		return;
+	}
 
 	showme_loadjson_features(geojson.features, file.name);
 }
