@@ -19,6 +19,7 @@ body {
     left: 60%;
     margin:25px;
     font-size: small;
+    width: 35%;
 }
 
 svg {
@@ -111,8 +112,15 @@ svg {
 
 input[type=submit] {
     border: solid thin;
-    display:block;
-    float:right;
+    margin-left: 20px;
+}
+
+input[type=text] {
+    border: solid thin;
+}
+
+input[type=file] {
+    /* how does one style these... */
 }
 
 .bbox {
@@ -123,6 +131,7 @@ input[type=submit] {
 
 #load_header {
 	color:#666;
+	text-align:right;
 }
 
 #load_header:hover {
@@ -132,11 +141,19 @@ input[type=submit] {
 
 #load_form {
 	display:none;
-	background-color:#ccc;
+	border:1px solid #ccc;
+	background-image: url('dot.gif');
 	padding:25px;
-	padding-bottom:40px;
+	padding-bottom:15px;
 }
 
 #load_form label {
 	font-weight: 700;
+	display:block;
+}
+
+#load_buttons{
+    text-align:right;
+    margin-right:12px;
+    margin-top:15px;
 }
