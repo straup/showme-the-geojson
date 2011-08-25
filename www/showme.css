@@ -99,10 +99,25 @@ svg {
 }
 
 #properties {
+    font-size:small;
+    display:none;
+}
+
+#properties h2 {
+}
+
+.properties {
+    margin:0px;
+    padding:0px;
 }
 
 .properties li {
 	line-height: 25px;
+	list-style-type:none;
+}
+
+.properties li a:hover {
+    text-decoration:underline;
 }
 
 #loadfiles {
@@ -156,4 +171,10 @@ input[type=file] {
     text-align:right;
     margin-right:12px;
     margin-top:15px;
+}
+
+.caveat {
+    font-style:italic;
+    color:#666;
+    font-size:11px;
 }

@@ -1,6 +1,7 @@
 var map = null;
 var map_extent = null;
 
+var documents = {};
 var extents = {};
 var properties = {};
 
@@ -42,13 +43,15 @@ function showme_loadjson_uri(uri){
 		return;
 	}
 
-	var js_tiles = org.polymaps.geoJson();
-	js_tiles.url(uri);
+	var layer = org.polymaps.geoJson();
+	layer.url(uri);
 
 	var onload = showme_onload(uri);
-	js_tiles.on('load', onload());
+	layer.on('load', onload());
 
-	map.add(js_tiles);
+	map.add(layer);
+
+	documents[uri] = layer;
 }
 
 // this doesn't work for reasons I don't understand...
@@ -89,7 +92,7 @@ function showme_onload(uri){
 			showme_onloadjson(e, uri, set_extent);
 
 			if (set_extent){
-				showme_list_extents();
+				showme_list_documents();
 			}
 
 			set_extent = 0;
@@ -126,7 +129,6 @@ function showme_onloadjson(geojson, uid, set_extent){
 		}
 
 		else if (data.geometry.type == 'Polygon'){
-            console.log(data);
 			var coords = data.geometry.coordinates[0];
 			var count_coords = coords.length;
 
@@ -166,7 +168,7 @@ function showme_onloadjson(geojson, uid, set_extent){
 		}
 
 		else {
-			console.log("unsupported type");
+			console.log("unsupported type: " + data.geometry.type);
 			continue;
 		}
 
@@ -177,6 +179,7 @@ function showme_onloadjson(geojson, uid, set_extent){
 
 		var el = feature.element;
 		el.setAttribute('onmouseover', 'showme_show_properties("' + pid + '");');
+		el.setAttribute('onclick', 'showme_copy_to_clipboard("' + pid + '");');
 
 		el.setAttribute('class', data.geometry.type.toLowerCase());
 		el.setAttribute('id', hex);
@@ -208,60 +211,77 @@ function showme_onloadjson(geojson, uid, set_extent){
 	}
 }
 
-function showme_list_extents(){
+function showme_list_documents(){
 
-	var ul = document.createElement('ul');
-	ul.setAttribute('class', 'properties');
+	// fix me: rename me
 
-	var counter = 0;
+	var docs = document.getElementById("extents");
+	docs.innerHTML = '';
+
+	var list = document.createElement('ul');
+	list.setAttribute('class', 'properties');
 
 	for (var uid in extents){
 
-		var li = document.createElement('li');
-		var a = document.createElement('a');
+		var doc = document.createElement('li');
+		var name = document.createElement('a');
 		var txt = document.createTextNode(uid);
+		name.appendChild(txt);
+		name.setAttribute('onclick', 'showme_jumpto("' + uid + '");');
 
-		a.appendChild(txt);
-		a.setAttribute('onclick', 'showme_jumpto("' + uid + '");');
+		var del = document.createElement('a');
+		var txt = document.createTextNode(" [x]");
+		del.appendChild(txt);
+		del.setAttribute('onclick', 'remove_document("' + uid + '");');
 
 		var bbox = extents[ uid ];
 		bbox = [ bbox[0].lat, bbox[0].lon, bbox[1].lat, bbox[1].lon ];
 
-		var div = document.createElement('div');
-		div.setAttribute('class', 'bbox');
-		div.appendChild(document.createTextNode(bbox.join(', ')));
+		var extent = document.createElement('div');
+		extent.setAttribute('class', 'bbox');
+		extent.appendChild(document.createTextNode(bbox.join(', ')));
 
-		li.appendChild(a);
-		li.appendChild(div);
-
-		ul.appendChild(li);
-
-		counter ++;
+		doc.appendChild(name);
+		doc.appendChild(del);
+		doc.appendChild(extent);
+		list.appendChild(doc);
 	}
 
-	if (counter > 1){
+	if (list.children.length == 0){
+		return;
+	}
 
-		var li = document.createElement('li');
-		var a = document.createElement('a');
+	if (list.children.length > 1){
+
+		var control = document.createElement('li');
+		var link = document.createElement('a');
 		var txt = document.createTextNode("show all");
 
-		a.appendChild(txt);
-		a.setAttribute('onclick', 'showme_jumpto();');
-
-		li.appendChild(a);
-		ul.appendChild(li);
+		link.appendChild(txt);
+		link.setAttribute('onclick', 'showme_jumpto();');
+		control.appendChild(link);
+		list.appendChild(control);
 	}
 
 	var header = document.createElement('h2');
 	header.appendChild(document.createTextNode('Documents'));
 
-	var ext = document.getElementById("extents");
-	ext.innerHTML = '';
-
-	ext.appendChild(header);
-	ext.appendChild(ul);
+	docs.appendChild(header);
+	docs.appendChild(list);
 }
 
+function remove_document(uid){
+	if (! documents[uid]){
+		return;
+	}
+
+	map.remove(documents[uid]);
+
+	delete documents[uid];
+	delete extents[uid];
+
+	showme_list_documents();
+}
 function showme_jumpto(uid){
 
 	showme_hide_properties();
@@ -277,6 +297,8 @@ function showme_jumpto(uid){
 }
 
 function showme_show_properties(pid){
+
+	// pid == document uri + '#' + feature idx
 
 	var active = document.getElementsByClassName('geom-active');
 	var count_active = active.length;
@@ -301,32 +323,61 @@ function showme_show_properties(pid){
 	var uid = parts[0];
 	var idx = parts[1];
 
-	var data = properties[uid][idx];
-
-	var ul = document.createElement('ul');
-	ul.setAttribute('class', 'properties');
-
-	for (var key in data){
-		var value = data[key];
-		var li = document.createElement('li');
-		var txt = document.createTextNode(key + ' : ' + value);
-		li.appendChild(txt);
-		ul.appendChild(li);
+	if (! properties[uid]){
+		return;
 	}
 
-	var header = document.createElement('h2');
-	header.appendChild(document.createTextNode(uid + ', item #' + (Number(idx) + 1)));
+	var data = properties[uid][idx];
 
 	var props = document.getElementById("properties");
 	props.innerHTML = '';
 
+	var header = document.createElement('h2');
+	header.appendChild(document.createTextNode(uid + ', item #' + (Number(idx) + 1)));
 	props.appendChild(header);
-	props.appendChild(ul);
+
+	var list = document.createElement('ul');
+	list.setAttribute('class', 'properties');
+
+	if (data){
+		for (var key in data){
+
+			var value = data[key];
+			var prop = document.createElement('li');
+			var txt = document.createTextNode(key + ' : ' + value);
+
+			prop.appendChild(txt);
+			list.appendChild(prop);
+		}
+	}
+
+	if (! list.children.length){
+
+		var note = document.createElement('li');
+		note.setAttribute("class", "caveat");
+		var txt = document.createTextNode('this feature has no extra properties');
+
+		note.appendChild(txt);
+		list.appendChild(note);
+	}
+
+	var control = document.createElement('li');
+	var link = document.createElement('a');
+	var txt = document.createTextNode("close");
+
+	link.appendChild(txt);
+	link.setAttribute('onclick', 'showme_hide_properties();');
+	control.appendChild(link);
+	list.appendChild(control);
+
+	props.appendChild(list);
+	props.style.display = 'block';
 }
 
 function showme_hide_properties(){
 	var props = document.getElementById("properties");
 	props.innerHTML = '';
+	props.style.display = 'none';
 }
 
 function showme_formhandler(){
@@ -356,7 +407,15 @@ function showme_formhandler(){
 
 function showme_loadfiles(files){
 
-		var file = files[0];
+	var count_files = files.length;
+
+	for (var i=0; i < count_files; i++){
+		showme_loadfile(files[i]);
+	}
+
+}
+
+function showme_loadfile(file){
 
 	// see notes in showme_loadjson_features;
 	// this works in FF an Safari...
@@ -397,4 +456,8 @@ function toggle_form(close){
 
 	var f = document.getElementById("load_form");
 	f.style.display = (close) ? 'none' : 'block';
+}
+
+function showme_copy_to_clipboard(pid){
+	// to do...
 }
