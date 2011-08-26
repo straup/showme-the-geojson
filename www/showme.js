@@ -230,7 +230,9 @@ function showme_list_documents(){
 		name.setAttribute('onclick', 'showme_jumpto("' + uid + '");');
 
 		var del = document.createElement('a');
-		var txt = document.createTextNode(" [x]");
+		del.setAttribute("class", "close");
+
+		var txt = document.createTextNode(" remove this document");
 		del.appendChild(txt);
 		del.setAttribute('onclick', 'remove_document("' + uid + '");');
 
@@ -280,8 +282,10 @@ function remove_document(uid){
 	delete documents[uid];
 	delete extents[uid];
 
+	showme_hide_properties();
 	showme_list_documents();
 }
+
 function showme_jumpto(uid){
 
 	showme_hide_properties();
@@ -336,6 +340,24 @@ function showme_show_properties(pid){
 	header.appendChild(document.createTextNode(uid + ', item #' + (Number(idx) + 1)));
 	props.appendChild(header);
 
+	var list = showme_domify_properties(data);
+
+	var control = document.createElement('li');
+	var link = document.createElement('a');
+	link.setAttribute("class", "close");
+	var txt = document.createTextNode("hide these properties");
+
+	link.appendChild(txt);
+	link.setAttribute('onclick', 'showme_hide_properties();');
+	control.appendChild(link);
+	list.appendChild(control);
+
+	props.appendChild(list);
+	props.style.display = 'block';
+}
+
+function showme_domify_properties(data){
+
 	var list = document.createElement('ul');
 	list.setAttribute('class', 'properties');
 
@@ -361,17 +383,7 @@ function showme_show_properties(pid){
 		list.appendChild(note);
 	}
 
-	var control = document.createElement('li');
-	var link = document.createElement('a');
-	var txt = document.createTextNode("close");
-
-	link.appendChild(txt);
-	link.setAttribute('onclick', 'showme_hide_properties();');
-	control.appendChild(link);
-	list.appendChild(control);
-
-	props.appendChild(list);
-	props.style.display = 'block';
+	return list;
 }
 
 function showme_hide_properties(){
@@ -459,5 +471,37 @@ function toggle_form(close){
 }
 
 function showme_copy_to_clipboard(pid){
-	// to do...
+
+	var parts = pid.split("#");
+	var uid = parts[0];
+	var idx = parts[1];
+
+	if (! properties[uid]){
+		return;
+	}
+
+	var data = properties[uid][idx];
+	var list = showme_domify_properties(data);
+
+	var clipboard = document.getElementById("clipboard");
+
+	var clipbody = document.getElementById("clipbody");
+	clipbody.innerHTML = '';
+
+	var header = document.createElement('h3');
+	header.appendChild(document.createTextNode(uid + ', item #' + (Number(idx) + 1)));
+
+	clipbody.appendChild(header);
+	clipbody.appendChild(list);
+	clipboard.style.display = 'block';
+
+}
+
+function showme_close_clipboard(){
+	var clipboard = document.getElementById("clipboard");
+	var clipbody = document.getElementById("clipbody");
+	clipbody.innerHTML = '';
+	clipboard.style.display = 'none';
+
+	showme_hide_properties();
 }

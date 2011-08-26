@@ -178,3 +178,29 @@ input[type=file] {
     color:#666;
     font-size:11px;
 }
+
+#clipboard {
+	background-color:#fff;
+	border:5px solid #000;
+	position: absolute;
+	top:25%;
+	left:25%;
+	height:50%;
+	width:50%;
+	overflow-x:none;
+	overflow-y:scroll;
+	padding:30px;
+	padding-left:50px;
+	padding-right:50px;
+	display:none;
+}
+
+#clipblurb {
+    font-size: 11px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.close {
+    color:red;
+}
