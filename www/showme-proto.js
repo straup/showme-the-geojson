@@ -2,6 +2,20 @@
 // supposed to be all self-contained and shiny and pluugable.
 // it is not done yet...
 
+// package functions
+
+function showme_init(container){
+
+	if (! container){
+		container = 'showme';
+	}
+
+	var sm = new info.aaronland.showme.GeoJSON(container);
+	sm.init();
+}
+
+// package methods
+
 if (! info){
 	var info = {};
 }
@@ -14,7 +28,9 @@ if (! info.aaronland.showme){
 	info.aaronland.showme = {};
 }
 
-info.aaronland.showme.GeoJSON = function(){
+info.aaronland.showme.GeoJSON = function(container){
+
+	this.container = container;
 
 	// TODO: make me a random and unique string
 	this.uid = 'map';
@@ -28,14 +44,46 @@ info.aaronland.showme.GeoJSON = function(){
 	this.tiles = 'http://spaceclaw.stamen.com/toner/{Z}/{X}/{Y}.png';
 }
 
-info.aaronland.showme.GeoJSON.prototype.init = function(id, uri){
+info.aaronland.showme.GeoJSON.prototype.generate_uid = function(id){
+	return self.uid + '_' + id;
+};
+
+info.aaronland.showme.GeoJSON.prototype.init = function(uri){
+
+	this.setup_html();
+	this.setup_map();
+
+	if (uri){
+		this.load_uri(uri);
+	}
+};
+
+info.aaronland.showme.GeoJSON.prototype.setup_html = function(){
 
 	// TODO: generate all DOM for the map bucket and sidebar/clipboard
 	// with anonymous event handlers; ensure that anything with an ID
 	// is prepended with this.uid; update CSS accordingly...
 
+	var container = document.getElementById(self.container);
+
+	var map = document.createElement("div");
+	map.setAttribute("id", self.generate_uid("map"));
+
+	var sidebar = document.createElement("div");
+	sidebar.setAttribute("id", self.generate_uid("sidebar"));
+
+	var clipboard = document.createElement("div");
+	clipboard.setAttribute("id", self.generate_uid("clipboard"));
+
+	container.appendChild(map);
+	container.appendChild(sidebar);
+	container.appendChild(clipboard);
+};
+
+info.aaronland.showme.GeoJSON.prototype.setup_map = function(uri){
+
 	var svg = org.polymaps.svg("svg");
-	var parent = document.getElementById(this.uid).appendChild(svg);
+	var parent = document.getElementById(self.generate_uid('map')).appendChild(svg);
 
 	var bg_tiles = org.polymaps.image();
 	bg_tiles.url(this.tiles);
@@ -55,11 +103,6 @@ info.aaronland.showme.GeoJSON.prototype.init = function(id, uri){
 	this.map.add(controls);
 	this.map.add(compass);
 	this.map.add(hash);
-
-	if (uri){
-		this.load_uri(uri);
-	}
-
 };
 
 info.aaronland.showme.GeoJSON.prototype.load_uri = function(uri){
@@ -110,148 +153,143 @@ info.aaronland.showme.GeoJSON.prototype.onload_generator = function(uri){
 
 	var self = this;
 
-	// TO DO: move this inline below
-
-	var onload = function(geojson, uid, set_extent){
-
-		if (! self.properties[uid]){
-			self.properties[uid] = new Array();
-		}
-
-		var count = geojson.features.length;
-
-		var swlat = null;
-		var swlon = null;
-		var nelat = null;
-		var nelon = null;
-
-		for (var i = 0; i < count; i++){
-
-			var feature = geojson.features[i];
-			var data = feature.data;
-
-			if (data.bbox){
-				swlat = (swlat) ? Math.min(swlat, data.bbox[1]) : data.bbox[1];
-				swlon = (swlon) ? Math.min(swlon, data.bbox[0]) : data.bbox[0];
-				nelat = (nelat) ? Math.max(nelat, data.bbox[3]) : data.bbox[3];
-				nelon = (nelon) ? Math.max(nelon, data.bbox[2]) : data.bbox[2];
-			}
-
-			else if (data.geometry.type == 'Polygon'){
-				var coords = data.geometry.coordinates[0];
-				var count_coords = coords.length;
-
-				for (var j=0; j < count_coords; j++){
-					swlat = (swlat) ? Math.min(swlat, coords[j][1]) : coords[j][1];
-					swlon = (swlon) ? Math.min(swlon, coords[j][0]) : coords[j][0];
-					nelat = (nelat) ? Math.max(nelat, coords[j][1]) : coords[j][1];
-					nelon = (nelon) ? Math.max(nelon, coords[j][0]) : coords[j][0];
-				}
-			}
-
-			else if (data.geometry.type == 'MultiPolygon'){
-
-				var polys = data.geometry.coordinates[0];
-				var count_polys = polys.length;
-
-				for (var j=0; j < count_polys; j++){
-
-					var count_coords = polys[j].length;
-
-					for (var k=0; k < count_coords; k++){
-						var coord = polys[j][k];
-						swlat = (swlat) ? Math.min(swlat, coord[1]) : coord[1];
-						swlon = (swlon) ? Math.min(swlon, coord[0]) : coord[0];
-						nelat = (nelat) ? Math.max(nelat, coord[1]) : coord[1];
-						nelon = (nelon) ? Math.max(nelon, coord[0]) : coord[0];
-					}
-				}
-			}
-
-			else if (data.geometry.type == 'Point'){
-				var coord = data.geometry.coordinates;
-				swlat = (swlat) ? Math.min(swlat, coord[1]) : coord[1];
-				swlon = (swlon) ? Math.min(swlon, coord[0]) : coord[0];
-				nelat = (nelat) ? Math.max(nelat, coord[1]) : coord[1];
-				nelon = (nelon) ? Math.max(nelon, coord[0]) : coord[0];
-			}
-
-			// TODO: linestrings
-
-			else {
-				console.log("unsupported type: " + data.geometry.type);
-				continue;
-			}
-
-			self.properties[uid][i] = data.properties;
-
-			var pid = uid + "#" + i;
-			var hex = hex_md5(pid);
-
-			var el = feature.element;
-
-			el.setAttribute('id', hex);
-			el.setAttribute('class', data.geometry.type.toLowerCase());
-
-			el.addEventListener('mouseover', function(){
-				self.show_properties(pid);
-			}, false);
-
-			el.addEventListener('click', function(){
-				self.copy_to_clipboard(pid);
-			}, false);
-		}
-
-		var extent = [
-			{lat: swlat, lon: swlon},
-			{lat: nelat, lon: nelon},
-		];
-
-		self.extents[ uid ] = extent;
-
-		if (set_extent){
-
-			if (! self.map_extent){
-				self.map_extent = extent;
-			}
-
-			else {
-
-				self.map_extent[0]['lat'] = Math.min(self.map_extent[0]['lat'], extent[0]['lat']);
-				self.map_extent[0]['lon'] = Math.min(self.map_extent[0]['lon'], extent[0]['lon']);
-				self.map_extent[1]['lat'] = Math.max(self.map_extent[1]['lat'], extent[1]['lat']);
-				self.map_extent[1]['lon'] = Math.max(self.map_extent[1]['lon'], extent[1]['lon']);
-			}
-
-			self.map.extent(extent);
-			self.map.zoom(Math.floor(self.map.zoom()));
-		}
-	};
-
-	// this is the thing we return
-
 	return function(){
 
 		// only set the extent of the geojson features once...
 		var set_extent = 1;
 
-		// this is the thing that gets called
-
 		return function(e){
-
-			// and this is what happens
-			onload(e, uri, set_extent);
-
-			if (set_extent){
-				self.list_documents();
-			}
-
+			self.onload_do_this(e, uri, set_extent);
 			set_extent = 0;
 		};
 	};
 
 	// moon language...
 }
+
+// this is the code that *actually* gets called by the
+// polymaps on('load') function
+
+info.aaronland.showme.GeoJSON.prototype.onload_do_this = function(geojson, uid, set_extent){
+
+	var self = this;
+
+	if (! this.properties[uid]){
+		this.properties[uid] = new Array();
+	}
+
+	var count = geojson.features.length;
+
+	var swlat = null;
+	var swlon = null;
+	var nelat = null;
+	var nelon = null;
+
+	for (var i = 0; i < count; i++){
+
+		var feature = geojson.features[i];
+		var data = feature.data;
+
+		if (data.bbox){
+			swlat = (swlat) ? Math.min(swlat, data.bbox[1]) : data.bbox[1];
+			swlon = (swlon) ? Math.min(swlon, data.bbox[0]) : data.bbox[0];
+			nelat = (nelat) ? Math.max(nelat, data.bbox[3]) : data.bbox[3];
+			nelon = (nelon) ? Math.max(nelon, data.bbox[2]) : data.bbox[2];
+		}
+
+		else if (data.geometry.type == 'Polygon'){
+			var coords = data.geometry.coordinates[0];
+			var count_coords = coords.length;
+
+			for (var j=0; j < count_coords; j++){
+				swlat = (swlat) ? Math.min(swlat, coords[j][1]) : coords[j][1];
+				swlon = (swlon) ? Math.min(swlon, coords[j][0]) : coords[j][0];
+				nelat = (nelat) ? Math.max(nelat, coords[j][1]) : coords[j][1];
+				nelon = (nelon) ? Math.max(nelon, coords[j][0]) : coords[j][0];
+			}
+		}
+
+		else if (data.geometry.type == 'MultiPolygon'){
+
+			var polys = data.geometry.coordinates[0];
+			var count_polys = polys.length;
+
+			for (var j=0; j < count_polys; j++){
+
+				var count_coords = polys[j].length;
+
+				for (var k=0; k < count_coords; k++){
+					var coord = polys[j][k];
+					swlat = (swlat) ? Math.min(swlat, coord[1]) : coord[1];
+					swlon = (swlon) ? Math.min(swlon, coord[0]) : coord[0];
+					nelat = (nelat) ? Math.max(nelat, coord[1]) : coord[1];
+					nelon = (nelon) ? Math.max(nelon, coord[0]) : coord[0];
+				}
+			}
+		}
+
+		else if (data.geometry.type == 'Point'){
+			var coord = data.geometry.coordinates;
+			swlat = (swlat) ? Math.min(swlat, coord[1]) : coord[1];
+			swlon = (swlon) ? Math.min(swlon, coord[0]) : coord[0];
+			nelat = (nelat) ? Math.max(nelat, coord[1]) : coord[1];
+			nelon = (nelon) ? Math.max(nelon, coord[0]) : coord[0];
+		}
+
+		// TODO: linestrings
+
+		else {
+			console.log("unsupported type: " + data.geometry.type);
+			continue;
+		}
+
+		this.properties[uid][i] = data.properties;
+
+		var pid = uid + "#" + i;
+		var hex = hex_md5(pid);
+
+		var el = feature.element;
+
+		el.setAttribute('id', hex);
+		el.setAttribute('class', data.geometry.type.toLowerCase());
+
+		el.addEventListener('mouseover', function(){
+			self.show_properties(pid);
+		}, false);
+
+		el.addEventListener('click', function(){
+			self.copy_to_clipboard(pid);
+		}, false);
+	}
+
+	var extent = [
+		{lat: swlat, lon: swlon},
+		{lat: nelat, lon: nelon},
+	];
+
+	this.extents[ uid ] = extent;
+
+	if (set_extent){
+
+		if (! this.map_extent){
+			this.map_extent = extent;
+		}
+
+		else {
+
+			this.map_extent[0]['lat'] = Math.min(this.map_extent[0]['lat'], extent[0]['lat']);
+			this.map_extent[0]['lon'] = Math.min(this.map_extent[0]['lon'], extent[0]['lon']);
+			this.map_extent[1]['lat'] = Math.max(this.map_extent[1]['lat'], extent[1]['lat']);
+			this.map_extent[1]['lon'] = Math.max(this.map_extent[1]['lon'], extent[1]['lon']);
+		}
+
+		this.map.extent(extent);
+		this.map.zoom(Math.floor(this.map.zoom()));
+
+		this.list_documents();
+	}
+
+};
 
 info.aaronland.showme.GeoJSON.prototype.list_documents = function(){
 
