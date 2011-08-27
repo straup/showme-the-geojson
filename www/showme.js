@@ -282,7 +282,26 @@ function remove_document(uid){
 	delete documents[uid];
 	delete extents[uid];
 
-	showme_hide_properties();
+	var swlat = null;
+	var swlon = null;
+	var nelat = null;
+	var nelon = null;
+
+	for (uid in extents){
+		bbox = extents[uid];
+
+		swlat = (swlat) ? Math.min(swlat, bbox[0]['lat']) : bbox[0]['lat'];
+		swlon = (swlon) ? Math.min(swlon, bbox[0]['lon']) : bbox[0]['lon'];
+		nelat = (nelat) ? Math.max(nelat, bbox[1]['lat']) : bbox[1]['lat'];
+		nelon = (nelon) ? Math.max(nelon, bbox[1]['lon']) : bbox[1]['lon'];
+	}
+
+	map_extent = [
+		{ 'lat': swlat, 'lon': swlon },
+		{ 'lat': nelat, 'lon': nelon },
+	];
+
+	showme_jumpto();
 	showme_list_documents();
 }
 
