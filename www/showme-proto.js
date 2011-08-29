@@ -66,18 +66,120 @@ info.aaronland.showme.GeoJSON.prototype.setup_html = function(){
 
 	var container = document.getElementById(self.container);
 
-	var map = document.createElement("div");
-	map.setAttribute("id", self.generate_uid("map"));
-
-	var sidebar = document.createElement("div");
-	sidebar.setAttribute("id", self.generate_uid("sidebar"));
-
-	var clipboard = document.createElement("div");
-	clipboard.setAttribute("id", self.generate_uid("clipboard"));
+	var map = this.generate_map();
+	var sidebar = this.generate_sidebar();
+	var clipboard = this.generate_clipboard();
 
 	container.appendChild(map);
 	container.appendChild(sidebar);
 	container.appendChild(clipboard);
+};
+
+info.aaronland.showme.GeoJSON.prototype.generate_map = function(){
+
+	var map = document.createElement("div");
+	map.setAttribute("id", self.generate_uid("map"));
+
+	return map;
+};
+
+info.aaronland.showme.GeoJSON.prototype.generate_sidebar = function(){
+
+	var self = this;
+
+	var sidebar = document.createElement("div");
+	sidebar.setAttribute("id", self.generate_uid("sidebar"));
+
+	var header = document.createElement("h3");
+	header.setAttribute("id", self.generate_uid("load_header"));
+	header.appendChild(document.createTextElement("load a new document"));
+
+	header.addEventListener("click", function(){
+		self.toggle_form();
+	});
+
+	var form_wrapper = document.createElement("div");
+	form_wrapper.setAttribute("id", self.generate_uid("load_form"));
+
+	var form = document.createElement("form");
+
+	form.addEventListener("submit", function(){
+		self.form_handler();
+	});
+
+	var file_uid = self.generate_uid("file");
+	var url_uid = self.generate_uid("url");
+
+	var file_label = document.createElement("label");
+	file_label.setAttribute("for", file_uid);
+	file_label.appendChild(document.createTextNode("load one or more documents from your computer"));
+
+	var file_input = document.createElement("input");
+	file_input.setAttribute("type", "file");
+	file_input.setAttribute("size", "40");
+	// multiple?
+
+	var url_label = document.createElement("label");
+	url_label.setAttribute("for", url_uid);
+	url_label.appendChild(document.createTextNode("load a document from the web"));
+
+	var url_input = document.createElement("input");
+	url_input.setAttribute("type", "text");
+	url_input.setAttribute("size", "50");
+
+	var buttons = document.createElement("div");
+
+	form.appendChild(file_label);
+	form.appendChild(file_input);
+	form.appendChild(url_label);
+	form.appendChild(url_input);
+	form.appendChild(buttons);
+
+	formwrapper.appendChild(form);
+
+	var documents = document.createElement("div");
+	document.setAttribute("id", self.generate_uid("documents"));
+
+	var properties = document.createElement("div");
+	properties.setAttribute("id", self.generate_uid("properties"));
+
+	sidebar.appendChild(header);
+	sidebar.appendChild(form_wrapper);
+	sidebar.appendChild(documents);
+	sidebar.appendChild(properties);
+
+	return sidebar;
+};
+
+info.aaronland.showme.GeoJSON.prototype.generate_clipboard = function(){
+
+	var self = this;
+
+	var clipboard = document.createElement("div");
+	clipboard.setAttribute("id", self.generate_uid("clipboard"));
+
+	var clipbody = document.createElement('div');
+	clipbody.setAttribute("id", self.generate_uid("clipbody"));
+
+	var blurb = "This is the clipboard. It displays the properties for the last feature you clicked on in this here modal dialog in case you want to copy to your computer's actual clipboard.";
+
+	var blurb_text = document.createElement("p");
+	blurb_text.appendChild(document.createTextNode(blurb));
+
+	var blurb_control = document.createElement("");
+	blurb_control.appendChild(document.createTextNode("close the clipboard"));
+
+	blurb_control.addEventListener('click', function(){
+		self.close_clipboard();
+	});
+
+	clipblurb.appendChild(blurb_text);
+	clipblurb.appendChild(blurb_control);
+
+	clipboard.appendChild(clipblurb);
+	clipboard.appendChild(clipbody);
+
+	return clipboard;
 };
 
 info.aaronland.showme.GeoJSON.prototype.setup_map = function(uri){
