@@ -33,7 +33,7 @@ info.aaronland.showme.GeoJSON = function(container){
 	this.container = container;
 
 	// TODO: make me a random and unique string
-	this.uid = 'map';
+	this.appid = 'map';
 
 	this.map = null;
 	this.map_extent = null;
@@ -45,8 +45,12 @@ info.aaronland.showme.GeoJSON = function(container){
 	this.zoomrange = [1, 18];
 }
 
-info.aaronland.showme.GeoJSON.prototype.generate_uid = function(id){
-	return this.uid + '_' + id;
+info.aaronland.showme.GeoJSON.prototype.uid = function(id){
+	return this.appid + '_' + id;
+};
+
+info.aaronland.showme.GeoJSON.prototype.classname = function(classname){
+	return 'sm_' + classname;
 };
 
 info.aaronland.showme.GeoJSON.prototype.init = function(uri){
@@ -60,10 +64,6 @@ info.aaronland.showme.GeoJSON.prototype.init = function(uri){
 };
 
 info.aaronland.showme.GeoJSON.prototype.setup_html = function(){
-
-	// TODO: generate all DOM for the map bucket and sidebar/clipboard
-	// with anonymous event handlers; ensure that anything with an ID
-	// is prepended with this.uid; update CSS accordingly...
 
 	var container = document.getElementById(this.container);
 
@@ -79,7 +79,8 @@ info.aaronland.showme.GeoJSON.prototype.setup_html = function(){
 info.aaronland.showme.GeoJSON.prototype.generate_map = function(){
 
 	var map = document.createElement("div");
-	map.setAttribute("id", this.generate_uid("map"));
+	map.setAttribute("id", this.uid("map"));
+	map.setAttribute("class", this.classname("map"));
 
 	return map;
 };
@@ -89,10 +90,13 @@ info.aaronland.showme.GeoJSON.prototype.generate_sidebar = function(){
 	var self = this;
 
 	var sidebar = document.createElement("div");
-	sidebar.setAttribute("id", self.generate_uid("sidebar"));
+	sidebar.setAttribute("id", self.uid("sidebar"));
+	sidebar.setAttribute("class", self.classname("sidebar"));
 
 	var header = document.createElement("h3");
-	header.setAttribute("id", self.generate_uid("load_header"));
+	header.setAttribute("id", self.uid("load_header"));
+	header.setAttribute("class", self.classname("load_header"));
+
 	header.appendChild(document.createTextNode("load a new document"));
 
 	header.addEventListener("click", function(){
@@ -100,7 +104,8 @@ info.aaronland.showme.GeoJSON.prototype.generate_sidebar = function(){
 	});
 
 	var form_wrapper = document.createElement("div");
-	form_wrapper.setAttribute("id", self.generate_uid("load_form"));
+	form_wrapper.setAttribute("id", self.uid("load_form"));
+	form_wrapper.setAttribute("class", self.classname("load_form"));
 
 	var form = document.createElement("form");
 
@@ -108,14 +113,15 @@ info.aaronland.showme.GeoJSON.prototype.generate_sidebar = function(){
 		self.form_handler();
 	});
 
-	var file_uid = self.generate_uid("file");
-	var url_uid = self.generate_uid("url");
+	var file_uid = self.uid("file");
+	var url_uid = self.uid("url");
 
 	var file_label = document.createElement("label");
 	file_label.setAttribute("for", file_uid);
 	file_label.appendChild(document.createTextNode("load one or more documents from your computer"));
 
 	var file_input = document.createElement("input");
+	file_input.setAttribute("id", file_uid);
 	file_input.setAttribute("type", "file");
 	file_input.setAttribute("size", "40");
 	// multiple?
@@ -125,6 +131,7 @@ info.aaronland.showme.GeoJSON.prototype.generate_sidebar = function(){
 	url_label.appendChild(document.createTextNode("load a document from the web"));
 
 	var url_input = document.createElement("input");
+	url_input.setAttribute("id", url_uid);
 	url_input.setAttribute("type", "text");
 	url_input.setAttribute("size", "50");
 
@@ -154,10 +161,12 @@ info.aaronland.showme.GeoJSON.prototype.generate_sidebar = function(){
 	form_wrapper.appendChild(form);
 
 	var documents = document.createElement("div");
-	documents.setAttribute("id", self.generate_uid("documents"));
+	documents.setAttribute("id", self.uid("documents"));
+	documents.setAttribute("class", self.classname("documents"));
 
 	var properties = document.createElement("div");
-	properties.setAttribute("id", self.generate_uid("properties"));
+	properties.setAttribute("id", self.uid("properties"));
+	properties.setAttribute("class", self.classname("properties"));
 
 	sidebar.appendChild(header);
 	sidebar.appendChild(form_wrapper);
@@ -172,13 +181,16 @@ info.aaronland.showme.GeoJSON.prototype.generate_clipboard = function(){
 	var self = this;
 
 	var clipboard = document.createElement("div");
-	clipboard.setAttribute("id", self.generate_uid("clipboard"));
+	clipboard.setAttribute("id", this.uid("clipboard"));
+	clipboard.setAttribute("class", this.classname("clipboard"));
 
 	var clipbody = document.createElement('div');
-	clipbody.setAttribute("id", self.generate_uid("clipbody"));
+	clipbody.setAttribute("id", this.uid("clipbody"));
+	clipbody.setAttribute("class", this.classname("clipbody"));
 
 	var clipblurb = document.createElement('div');
-	clipblurb.setAttribute("id", self.generate_uid("clipblurb"));
+	clipblurb.setAttribute("id", this.uid("clipblurb"));
+	clipblurb.setAttribute("class", this.classname("clipblurb"));
 
 	var blurb = "This is the clipboard. It displays the properties for the last feature you clicked on in this here modal dialog in case you want to copy to your computer's actual clipboard.";
 
@@ -186,6 +198,7 @@ info.aaronland.showme.GeoJSON.prototype.generate_clipboard = function(){
 	blurb_text.appendChild(document.createTextNode(blurb));
 
 	var blurb_control = document.createElement("a");
+	blurb_control.setAttribute("class", this.classname("close"));
 	blurb_control.appendChild(document.createTextNode("close the clipboard"));
 
 	blurb_control.addEventListener('click', function(){
@@ -204,7 +217,7 @@ info.aaronland.showme.GeoJSON.prototype.generate_clipboard = function(){
 info.aaronland.showme.GeoJSON.prototype.setup_map = function(uri){
 
 	var svg = org.polymaps.svg("svg");
-	var parent = document.getElementById(this.generate_uid('map')).appendChild(svg);
+	var parent = document.getElementById(this.uid('map')).appendChild(svg);
 
 	var bg_tiles = org.polymaps.image();
 	bg_tiles.url(this.tiles);
@@ -291,6 +304,8 @@ info.aaronland.showme.GeoJSON.prototype.onload_generator = function(uri){
 // this is the code that *actually* gets called by the
 // polymaps on('load') function
 
+// TODO: mouseovers not working correctly
+
 info.aaronland.showme.GeoJSON.prototype.onload_do_this = function(geojson, uid, set_extent){
 
 	var self = this;
@@ -370,9 +385,10 @@ info.aaronland.showme.GeoJSON.prototype.onload_do_this = function(geojson, uid, 
 		var hex = hex_md5(pid);
 
 		var el = feature.element;
+		var type = data.geometry.type.toLowerCase();
 
 		el.setAttribute('id', hex);
-		el.setAttribute('class', data.geometry.type.toLowerCase());
+		el.setAttribute('class', type);
 
 		el.addEventListener('mouseover', function(){
 			self.show_properties(pid);
@@ -416,11 +432,10 @@ info.aaronland.showme.GeoJSON.prototype.list_documents = function(){
 
 	var self = this;
 
-	var docs = document.getElementById(this.generate_uid("documents"));
+	var docs = document.getElementById(this.uid("documents"));
 	docs.innerHTML = '';
 
 	var list = document.createElement('ul');
-	list.setAttribute('class', 'properties');
 
 	for (var uid in this.extents){
 
@@ -447,7 +462,7 @@ info.aaronland.showme.GeoJSON.prototype.list_documents = function(){
 		bbox = [ bbox[0].lat, bbox[0].lon, bbox[1].lat, bbox[1].lon ];
 
 		var extent = document.createElement('div');
-		extent.setAttribute('class', 'bbox');
+		extent.setAttribute('class', this.classname('bbox'));
 		extent.appendChild(document.createTextNode(bbox.join(', ')));
 
 		doc.appendChild(name);
@@ -564,7 +579,7 @@ info.aaronland.showme.GeoJSON.prototype.show_properties = function(pid){
 
 	var data = this.properties[uid][idx];
 
-	var props = document.getElementById("properties");
+	var props = document.getElementById(this.uid("properties"));
 	props.innerHTML = '';
 
 	var header = document.createElement('h2');
@@ -575,7 +590,7 @@ info.aaronland.showme.GeoJSON.prototype.show_properties = function(pid){
 
 	var control = document.createElement('li');
 	var link = document.createElement('a');
-	link.setAttribute("class", "close");
+	link.setAttribute("class", this.classname("close"));
 
 	var txt = document.createTextNode("hide these properties");
 	link.appendChild(txt);
@@ -623,21 +638,21 @@ info.aaronland.showme.GeoJSON.prototype.domify_properties = function(data){
 
 info.aaronland.showme.GeoJSON.prototype.hide_properties = function(){
 
-	var props = document.getElementById(this.generate_uid("properties"));
+	var props = document.getElementById(this.uid("properties"));
 	props.innerHTML = '';
 	props.style.display = 'none';
 }
 
 info.aaronland.showme.GeoJSON.prototype.form_handler = function(){
 
-	var uri = document.getElementById(this.generate_uid("url"));
-	var file = document.getElementById(this.generate_uid("file"));
+	var url = document.getElementById(this.uid("url"));
+	var file = document.getElementById(this.uid("file"));
 
-	if (uri.value){
+	if (url.value){
 
-		if (uri.value.indexOf("http://") == 0){
-			this.load_uri(uri.value);
-			uri.value = '';
+		if (url.value.indexOf("http://") == 0){
+			this.load_uri(url.value);
+			url.value = '';
 			return;
 		}
 
@@ -697,10 +712,10 @@ info.aaronland.showme.GeoJSON.prototype.load_file = function(file){
 
 info.aaronland.showme.GeoJSON.prototype.toggle_form = function(close){
 
-	var h = document.getElementById("load_header");
+	var h = document.getElementById(this.uid("load_header"));
 	h.style.display = (close) ? 'block' : 'none';
 
-	var f = document.getElementById("load_form");
+	var f = document.getElementById(this.uid("load_form"));
 	f.style.display = (close) ? 'none' : 'block';
 }
 
@@ -717,8 +732,8 @@ info.aaronland.showme.GeoJSON.prototype.copy_to_clipboard = function(pid){
 	var data = this.properties[uid][idx];
 	var list = this.domify_properties(data);
 
-	var clipboard = document.getElementById(this.generate_uid("clipboard"));
-	var clipbody = document.getElementById(this.generate_uid("clipbody"));
+	var clipboard = document.getElementById(this.uid("clipboard"));
+	var clipbody = document.getElementById(this.uid("clipbody"));
 
 	clipbody.innerHTML = '';
 
@@ -732,8 +747,8 @@ info.aaronland.showme.GeoJSON.prototype.copy_to_clipboard = function(pid){
 
 info.aaronland.showme.GeoJSON.prototype.close_clipboard = function(){
 
-	var clipboard = document.getElementById(this.generate_uid("clipboard"));
-	var clipbody = document.getElementById(this.generate_uid("clipbody"));
+	var clipboard = document.getElementById(this.uid("clipboard"));
+	var clipbody = document.getElementById(this.uid("clipbody"));
 
 	clipbody.innerHTML = '';
 	clipboard.style.display = 'none';
