@@ -111,6 +111,7 @@ info.aaronland.showme.GeoJSON.prototype.generate_sidebar = function(){
 
 	form.addEventListener("submit", function(){
 		self.form_handler();
+		return false;
 	});
 
 	var file_uid = self.uid("file");
@@ -390,6 +391,11 @@ info.aaronland.showme.GeoJSON.prototype.onload_do_this = function(geojson, uid, 
 		el.setAttribute('id', hex);
 		el.setAttribute('class', type);
 
+		// why does this appear to only be creating or assigning
+		// the same event to every element? specifically all instances
+		// of 'el' are being passed a reference to the pid for the
+		// last feature...
+
 		el.addEventListener('mouseover', function(){
 			self.show_properties(pid);
 		}, false);
@@ -397,6 +403,7 @@ info.aaronland.showme.GeoJSON.prototype.onload_do_this = function(geojson, uid, 
 		el.addEventListener('click', function(){
 			self.copy_to_clipboard(pid);
 		}, false);
+
 	}
 
 	var extent = [
