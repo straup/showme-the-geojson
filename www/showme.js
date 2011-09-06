@@ -116,20 +116,22 @@ function showme_onloadjson(geojson, uid, set_extent){
 	var nelat = null;
 	var nelon = null;
 
-	for (var i = 0; i < count; i++){
+	var calculate_extent_for_geom = function(geom){
 
-		var feature = geojson.features[i];
-		var data = feature.data;
+		if (geom.type == 'GeometryCollection'){
 
-		if (data.bbox){
-			swlat = (swlat) ? Math.min(swlat, data.bbox[1]) : data.bbox[1];
-			swlon = (swlon) ? Math.min(swlon, data.bbox[0]) : data.bbox[0];
-			nelat = (nelat) ? Math.max(nelat, data.bbox[3]) : data.bbox[3];
-			nelon = (nelon) ? Math.max(nelon, data.bbox[2]) : data.bbox[2];
+			console.log('GeometryCollections are not fully implemented yet');
+			return;
+
+			var count_geoms = geom.geometries.length;
+
+			for (var j=0; j < count_geoms; j++){
+				calculate_extent_for_geom(geom.geometries[j]);
+			}
 		}
 
-		else if (data.geometry.type == 'Polygon'){
-			var coords = data.geometry.coordinates[0];
+		else if (geom.type == 'Polygon'){
+			var coords = geom.coordinates[0];
 			var count_coords = coords.length;
 
 			for (var j=0; j < count_coords; j++){
@@ -140,9 +142,9 @@ function showme_onloadjson(geojson, uid, set_extent){
 			}
 		}
 
-		else if (data.geometry.type == 'MultiPolygon'){
+		else if (geom.type == 'MultiPolygon'){
 
-			var polys = data.geometry.coordinates[0];
+			var polys = geom.coordinates[0];
 			var count_polys = polys.length;
 
 			for (var j=0; j < count_polys; j++){
@@ -159,8 +161,8 @@ function showme_onloadjson(geojson, uid, set_extent){
 			}
 		}
 
-		else if (data.geometry.type == 'Point'){
-			var coord = data.geometry.coordinates;
+		else if (geom.type == 'Point'){
+			var coord = geom.coordinates;
 			swlat = (swlat) ? Math.min(swlat, coord[1]) : coord[1];
 			swlon = (swlon) ? Math.min(swlon, coord[0]) : coord[0];
 			nelat = (nelat) ? Math.max(nelat, coord[1]) : coord[1];
@@ -169,7 +171,24 @@ function showme_onloadjson(geojson, uid, set_extent){
 
 		else {
 			console.log("unsupported type: " + data.geometry.type);
-			continue;
+		}
+
+	};
+
+	for (var i = 0; i < count; i++){
+
+		var feature = geojson.features[i];
+		var data = feature.data;
+
+		if (data.bbox){
+			swlat = (swlat) ? Math.min(swlat, data.bbox[1]) : data.bbox[1];
+			swlon = (swlon) ? Math.min(swlon, data.bbox[0]) : data.bbox[0];
+			nelat = (nelat) ? Math.max(nelat, data.bbox[3]) : data.bbox[3];
+			nelon = (nelon) ? Math.max(nelon, data.bbox[2]) : data.bbox[2];
+		}
+
+		else {
+			calculate_extent_for_geom(data.geometry);
 		}
 
 		properties[uid][i] = data.properties;
@@ -178,11 +197,19 @@ function showme_onloadjson(geojson, uid, set_extent){
 		var hex = hex_md5(pid);
 
 		var el = feature.element;
-		el.setAttribute('onmouseover', 'showme_show_properties("' + pid + '");');
-		el.setAttribute('onclick', 'showme_copy_to_clipboard("' + pid + '");');
 
-		el.setAttribute('class', data.geometry.type.toLowerCase());
-		el.setAttribute('id', hex);
+		if (data.geometry.type == 'GeometryCollection'){
+			// write me...
+		}
+
+		else {
+			el.setAttribute('onmouseover', 'showme_show_properties("' + pid + '");');
+			el.setAttribute('onclick', 'showme_copy_to_clipboard("' + pid + '");');
+
+			el.setAttribute('class', data.geometry.type.toLowerCase());
+			el.setAttribute('id', hex);
+		}
+
 	}
 
 	var extent = [
@@ -215,7 +242,7 @@ function showme_list_documents(){
 
 	// fix me: rename me
 
-	var docs = document.getElementById("extents");
+	var docs = document.getElementById("documents");
 	docs.innerHTML = '';
 
 	var list = document.createElement('ul');
@@ -230,7 +257,7 @@ function showme_list_documents(){
 		name.setAttribute('onclick', 'showme_jumpto("' + uid + '");');
 
 		var del = document.createElement('a');
-		del.setAttribute("class", "close");
+		del.setAttribute("class", "sm_close");
 
 		var txt = document.createTextNode(" remove this document");
 		del.appendChild(txt);
@@ -363,7 +390,7 @@ function showme_show_properties(pid){
 
 	var control = document.createElement('li');
 	var link = document.createElement('a');
-	link.setAttribute("class", "close");
+	link.setAttribute("class", "sm_close");
 	var txt = document.createTextNode("hide these properties");
 
 	link.appendChild(txt);
