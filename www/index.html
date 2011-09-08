@@ -6,20 +6,20 @@
 		<script type="text/javascript" src="showme.js"></script>
 		<link rel="stylesheet" type="text/css" href="showme.css" />
 	</head>
-	<body onload="showme_init('westcoast.geojson');">
+	<body onload="sm_init('westcoast.geojson');">
 		<div class="showme">
 		<div class="sm_map" id="map"></div>
 		<div class="sm_sidebar" id="sidebar">
-			<h3 class="sm_load_header" id="load_header" onclick="toggle_form();">load a new document</h3>
+			<h3 class="sm_load_header" id="load_header" onclick="sm_toggle_form();">load a new document</h3>
 			<div class="sm_load_form" id="load_form">
-			<form onsubmit="showme_formhandler();return false;">
+			<form onsubmit="sm_formhandler();return false;">
 			<label for="fetchfile">load one or more documents from your computer</label><br />
 			<input type="file" id="fetchfile" size="40" multiple /><br /><br />
 			<label for="fetchuri">load a document from the web</label><br />
 			<input type="text" id="fetchuri" size="50" /><br /><br />
 			<div id="load_buttons">
 			<input type="submit" value="SHOW ME NOW!"/>
-			<input type="submit" onclick="toggle_form('close'); return false;" value="OR NOT..."/>
+			<input type="submit" onclick="sm_toggle_form('close'); return false;" value="OR NOT..."/>
 			</div>
 			</form>
 			</div>
@@ -29,7 +29,7 @@
 		<div class="sm_clipboard" id="clipboard">
 			<div class="sm_clipblurb" id="clipblurb">
 				<p>This is the <q>clipboard</q>. It displays the properties for the last feature you clicked on in this here modal dialog in case you want to copy to your computer's actual clipboard.</p>
-				<p style="text-align:right;"><a onclick="showme_close_clipboard();" class="close">close the clipboard</a>
+				<p style="text-align:right;"><a onclick="sm_close_clipboard();" class="sm_close">close the clipboard</a>
 			</div>
 			<div class="sm_clipbody" id="clipbody"></div>
 		</div>
