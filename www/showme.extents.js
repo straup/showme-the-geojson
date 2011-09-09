@@ -30,7 +30,7 @@ function sm_extents_set(){
 
 	map_extent = [
 		{ 'lat': swlat, 'lon': swlon },
-		{ 'lat': nelat, 'lon': nelon },
+		{ 'lat': nelat, 'lon': nelon }
 	];
 
 	sm_extents_jumpto();
@@ -45,7 +45,7 @@ function sm_extents_jumpto(uid){
 		if (map_extent[0]['lat'] == null){
 			map.extent([
 				{ 'lat': -85, 'lon': -180 },
-				{ 'lat': 85, 'lon': 180 },
+				{ 'lat': 85, 'lon': 180 }
 			]);
 			map.zoom(1);
 			return;

@@ -25,11 +25,13 @@ function sm_onload_json(geojson, uid){
 			console.log('GeometryCollections are not fully implemented yet');
 			return;
 
+			/*
 			var count_geoms = geom.geometries.length;
 
 			for (var j=0; j < count_geoms; j++){
 				calculate_extent_for_geom(geom.geometries[j]);
 			}
+			*/
 		}
 
 		else if (geom.type == 'Polygon'){
@@ -115,7 +117,7 @@ function sm_onload_json(geojson, uid){
 
 	var extent = [
 		{lat: swlat, lon: swlon},
-		{lat: nelat, lon: nelon},
+		{lat: nelat, lon: nelon}
 	];
 
 	extents[ uid ] = extent;

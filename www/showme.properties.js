@@ -53,6 +53,9 @@ function sm_properties_show(pid){
 	var uid = parts[0];
 	var idx = parts[1];
 
+    console.log(pid);
+    console.log(uid);
+    console.log(properties);
 	if (! properties[uid]){
 		return;
 	}
