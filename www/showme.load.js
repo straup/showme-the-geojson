@@ -36,7 +36,7 @@ function sm_load_features(features, uri){
 	map.add(layer);
 	documents[uri] = layer;
 
-	sm_extents_set_onload();
+	sm_extents_set_onload(uri);
 	sm_form_toggle('close');
 }
 

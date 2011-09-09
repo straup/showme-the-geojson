@@ -4,7 +4,6 @@ function sm_documents_list(){
 	docs.innerHTML = '';
 
 	var list = document.createElement('ul');
-	list.setAttribute('class', 'sm_documents');
 
 	for (var uid in documents){
 

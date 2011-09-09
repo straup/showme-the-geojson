@@ -1,5 +1,9 @@
 function sm_extents_set_onload(uri){
 
+	if (! uri){
+		return;
+	}
+
 	if (! extents[uri]){
 
 		setTimeout(function(){
