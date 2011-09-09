@@ -135,6 +135,27 @@ input[type=file] {
     width: 100%;
 }
 
+.sm_clipbody {
+    font-size:small;
+}
+
+.sm_clipbody h2 {
+}
+
+.sm_clipbody ul {
+    margin:0px;
+    padding:0px;
+}
+
+.sm_clipbody ul li {
+	line-height: 25px;
+	list-style-type:none;
+}
+
+.sm_clipbody ul li a:hover {
+    text-decoration:underline;
+}
+
 .sm_close {
     color:red;
 }

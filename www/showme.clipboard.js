@@ -9,6 +9,12 @@ function sm_clipboard_copyto(pid){
 	}
 
 	var data = properties[uid][idx];
+
+	if (! data){
+		alert("This feature has no properties!");
+		return;
+	}
+
 	var list = sm_properties_endomify(data);
 
 	var clipboard = document.getElementById("clipboard");
