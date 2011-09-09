@@ -74,7 +74,7 @@ function sm_properties_show(pid){
 	var txt = document.createTextNode("hide these properties");
 
 	link.appendChild(txt);
-	link.setAttribute('onclick', 'sm_hide_properties();');
+	link.setAttribute('onclick', 'sm_properties_hide();');
 	control.appendChild(link);
 	list.insertBefore(control, list.firstChild);
 

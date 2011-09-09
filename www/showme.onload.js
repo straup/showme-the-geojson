@@ -104,8 +104,8 @@ function sm_onload_json(geojson, uid){
 		}
 
 		else {
-			el.setAttribute('onmouseover', 'sm_show_properties("' + pid + '");');
-			el.setAttribute('onclick', 'sm_copy_to_clipboard("' + pid + '");');
+			el.setAttribute('onmouseover', 'sm_properties_show("' + pid + '");');
+			el.setAttribute('onclick', 'sm_clipboard_copyto("' + pid + '");');
 
 			el.setAttribute('class', data.geometry.type.toLowerCase());
 			el.setAttribute('id', hex);

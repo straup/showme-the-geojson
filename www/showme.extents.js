@@ -9,8 +9,8 @@ function sm_extents_set_onload(uri){
 		return;
 	}
 
-	sm_extent_set();
-	// sm_documents_list();
+	sm_extents_set();
+	sm_documents_list();
 }
 function sm_extents_set(){
 

@@ -1,12 +1,12 @@
 function sm_form_handler(){
 
-	var uri = document.getElementById("fetchuri");
-	var file = document.getElementById("fetchfile");
+	var uri = document.getElementById("load_uri");
+	var file = document.getElementById("load_file");
 
 	if (uri.value){
 
 		if (uri.value.indexOf("http://") == 0){
-			sm_loadjson_uri(uri.value);
+			sm_load_uri(uri.value);
 			uri.value = '';
 		}
 

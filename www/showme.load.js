@@ -37,7 +37,6 @@ function sm_load_features(features, uri){
 	documents[uri] = layer;
 
 	sm_extents_set_onload();
-
 	sm_form_toggle('close');
 }
 

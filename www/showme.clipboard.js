@@ -9,7 +9,7 @@ function sm_clipboard_copyto(pid){
 	}
 
 	var data = properties[uid][idx];
-	var list = sm_domify_properties(data);
+	var list = sm_properties_endomify(data);
 
 	var clipboard = document.getElementById("clipboard");
 
@@ -29,5 +29,5 @@ function sm_clipboard_close(){
 	var clipbody = document.getElementById("clipbody");
 	clipbody.innerHTML = '';
 	clipboard.style.display = 'none';
-	sm_hide_properties();
+	sm_properties_hide();
 }
