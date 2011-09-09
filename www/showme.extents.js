@@ -46,7 +46,8 @@ function sm_extents_jumpto(uid){
 
 	if ((! uid) || (! extents[uid])){
 
-		if (map_extent[0]['lat'] == null){
+		if ((! map_extent) || (map_extent[0]['lat'] == null)){
+
 			map.extent([
 				{ 'lat': -85, 'lon': -180 },
 				{ 'lat': 85, 'lon': 180 }

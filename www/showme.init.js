@@ -5,7 +5,9 @@ var documents = {};
 var extents = {};
 var properties = {};
 
-function sm_init(uri){
+function sm_init(){
+
+	// defer this until we actually have an extent/document to work with?
 
 	var svg = org.polymaps.svg("svg");
 	var parent = document.getElementById('map').appendChild(svg);
@@ -30,7 +32,11 @@ function sm_init(uri){
 	compass.pan("none");
 	map.add(compass);
 
+    /*
 	if (uri){
 		sm_load_uri(uri);
 	}
+	*/
+
+	sm_extents_jumpto();
 }
