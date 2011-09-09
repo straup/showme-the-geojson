@@ -1,31 +1,42 @@
 function sm_properties_endomify(data){
 
 	var list = document.createElement('ul');
-	list.setAttribute('class', 'sm_properties');
 
 	if (data){
 		for (var key in data){
-
 			var value = data[key];
-			var prop = document.createElement('li');
+			var item = document.createElement('li');
 			var txt = document.createTextNode(key + ' : ' + value);
 
-			prop.appendChild(txt);
-			list.appendChild(prop);
+			item.appendChild(txt);
+			list.appendChild(item);
 		}
 	}
 
-	if (! list.children.length){
+	return list;
+}
 
-		var note = document.createElement('li');
-		note.setAttribute("class", "sm_caveat");
-		var txt = document.createTextNode('this feature has no extra properties');
+function sm_properties_mouseover(pid){
+	return sm_properties_show(pid);
+}
 
-		note.appendChild(txt);
-		list.appendChild(note);
+function sm_properties_mouseout(pid){
+
+	var parts = pid.split("#");
+	var uid = parts[0];
+	var idx = parts[1];
+
+	if (! properties[uid]){
+		return;
 	}
 
-	return list;
+	var data = properties[uid][idx];
+
+	if (data){
+		return;
+	}
+
+	sm_properties_hide();
 }
 
 function sm_properties_show(pid){
@@ -53,9 +64,6 @@ function sm_properties_show(pid){
 	var uid = parts[0];
 	var idx = parts[1];
 
-    console.log(pid);
-    console.log(uid);
-    console.log(properties);
 	if (! properties[uid]){
 		return;
 	}
@@ -71,17 +79,28 @@ function sm_properties_show(pid){
 
 	var list = sm_properties_endomify(data);
 
-	var control = document.createElement('li');
-	var link = document.createElement('a');
-	link.setAttribute("class", "sm_close");
-	var txt = document.createTextNode("hide these properties");
+	if (! list.children.length){
 
-	link.appendChild(txt);
-	link.setAttribute('onclick', 'sm_properties_hide();');
-	control.appendChild(link);
-	list.insertBefore(control, list.firstChild);
+		var note = document.createElement('li');
+		note.setAttribute("class", "sm_caveat");
+		var txt = document.createTextNode('this feature has no extra properties');
 
-	// TO DO: if there are no children then auto-close on mouseout
+		note.appendChild(txt);
+		list.appendChild(note);
+	}
+
+	else {
+
+		var control = document.createElement('li');
+		var link = document.createElement('a');
+		link.setAttribute("class", "sm_close");
+		var txt = document.createTextNode("hide these properties");
+
+		link.appendChild(txt);
+		link.setAttribute('onclick', 'sm_properties_hide();');
+		control.appendChild(link);
+		list.insertBefore(control, list.firstChild);
+	}
 
 	props.appendChild(list);
 	props.style.display = 'block';
