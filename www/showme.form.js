@@ -5,7 +5,7 @@ function sm_form_handler(){
 
 	if (uri.value){
 
-		if (uri.value.indexOf("http://") == 0){
+		if (uri.value.indexOf("http") == 0){
 			sm_load_uri(uri.value);
 			uri.value = '';
 		}
