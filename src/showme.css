@@ -1,0 +1,240 @@
+body {
+	margin: 0;
+	background-color:#fff;
+	font-family: sans-serif;
+}
+
+.sm_map {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 58%;
+	border-right: 5px solid #000;
+}
+
+.sm_map svg {
+	height: 100%;
+	width: 100%;
+}
+
+.sm_sidebar {
+    position: absolute;
+    top: 0;
+    left: 60%;
+    margin:25px;
+    font-size: small;
+    width: 35%;
+}
+
+.sm_load_header {
+	color:#666;
+	text-align:right;
+}
+
+.sm_load_header:hover {
+    text-decoration:underline;
+    color:#000;
+}
+
+.sm_load_form {
+	display:none;
+	border:1px solid #ccc;
+	background-image: url('dot.gif');
+	padding:25px;
+	padding-bottom:15px;
+}
+
+.sm_load_form label {
+	font-weight: 700;
+	display:block;
+}
+
+#load_buttons{
+    text-align:right;
+    margin-right:12px;
+    margin-top:15px;
+}
+
+.sm_properties {
+    font-size:small;
+    display:none;
+}
+
+.sm_properties h2 {
+}
+
+.sm_properties ul {
+    margin:0px;
+    padding:0px;
+}
+
+.sm_properties ul li {
+	line-height: 25px;
+	list-style-type:none;
+}
+
+.sm_properties ul li a:hover {
+    text-decoration:underline;
+}
+
+.sm_documents h2 {
+}
+
+.sm_documents ul {
+    margin:0px;
+    padding:0px;
+}
+
+.sm_documents ul li {
+	line-height: 25px;
+	list-style-type:none;
+}
+
+.sm_documents ul li a:hover {
+    text-decoration:underline;
+}
+
+#loadfiles {
+    display:block;
+    margin-bottom: 50px;
+}
+
+input[type=submit] {
+    border: solid thin;
+    margin-left: 20px;
+}
+
+input[type=text] {
+    border: solid thin;
+}
+
+input[type=file] {
+    /* how does one style these... */
+}
+
+.sm_clipboard {
+	background-color:#fff;
+	border:5px solid #000;
+	position: absolute;
+	top:25%;
+	left:25%;
+	height:50%;
+	width:50%;
+	overflow-x:none;
+	overflow-y:scroll;
+	padding:30px;
+	padding-left:50px;
+	padding-right:50px;
+	display:none;
+}
+
+.sm_clipblurb {
+    font-size: 11px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.sm_clipbody {
+    font-size:small;
+}
+
+.sm_clipbody h2 {
+}
+
+.sm_clipbody ul {
+    margin:0px;
+    padding:0px;
+}
+
+.sm_clipbody ul li {
+	line-height: 25px;
+	list-style-type:none;
+}
+
+.sm_clipbody ul li a:hover {
+    text-decoration:underline;
+}
+
+.sm_close {
+    color:red;
+}
+
+.sm_bbox {
+    font-size: 11px;
+    color: #ccc;
+    font-style: italic;
+}
+
+/* svg/map stuff */
+
+.polygon {
+	stroke: #000;
+	stroke-width: 5px;
+	fill: red;
+	fill-opacity:.5;
+}
+
+.polygon:hover{
+    fill: #ccffff;
+}
+
+.multipolygon {
+	stroke: #000;
+	stroke-width: 5px;
+	fill: red;
+	fill-opacity:.5;
+}
+
+.multipolygon:hover{
+    fill: #ccffff;
+}
+
+.point {
+	stroke: yellow;
+}
+
+.geom-active {
+    fill: red;
+    z-index:100;
+}
+
+.compass .back {
+  fill: #eee;
+  fill-opacity: .8;
+}
+
+.compass .fore {
+  stroke: #999;
+  stroke-width: 1.5px;
+}
+
+.compass rect.back.fore {
+  fill: #999;
+  fill-opacity: .3;
+  stroke: #eee;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+.compass .direction {
+  fill: none;
+}
+
+.compass .chevron {
+  fill: none;
+  stroke: #999;
+  stroke-width: 5px;
+}
+
+.compass .zoom .chevron {
+  stroke-width: 4px;
+}
+
+.compass .active .chevron, .compass .chevron.active {
+  stroke: #fff;
+}
+
+.compass.active .active .direction {
+  fill: #999;
+}
