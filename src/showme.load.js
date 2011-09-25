@@ -45,7 +45,6 @@ function sm_load_files(files){
 
 	var count_files = files.length;
 
-console.log("count " + count_files);
 	for (var i=0; i < count_files; i++){
 		sm_load_file(files[i]);
 	}
@@ -67,8 +66,15 @@ function sm_load_file(file){
 
 	file_reader.onloadend = function(e){
 
+		var target = e.target;
+
+		if (target.error){
+			alert('failed to load your document: ' + target.error.code);
+			return;
+		}
+
 		try {
-			geojson = JSON.parse(e.target.result);
+			geojson = JSON.parse(target.result);
 		}
 
 		catch(e) {
