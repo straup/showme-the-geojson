@@ -20,7 +20,7 @@ function sm_form_handler(){
 		}
 	}
 
-	if (file.files.length){
+	if ((has_filereader) && (file.files.length)){
 		something = 1;
 		sm_load_files(file.files);
 		file.value = '';
