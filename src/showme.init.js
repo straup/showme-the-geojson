@@ -7,9 +7,12 @@ var properties = {};
 
 function sm_init(){
 
-	// Oh, Safari...
+	// safari doesn't support FileReader at all but Chrome does
+	// except for the part where it won't read local files...wtf
 
-	if (typeof FileReader == "undefined"){
+	var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+
+	if ((typeof FileReader == "undefined") || (is_chrome)){
 		var input = document.getElementById("load_file");
 		input.setAttribute("type", "text");
 		input.setAttribute("value", "disabled (by your browser)");

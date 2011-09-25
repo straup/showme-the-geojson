@@ -69,7 +69,7 @@ function sm_load_file(file){
 		var target = e.target;
 
 		if (target.error){
-			alert('failed to load your document: ' + target.error.code);
+			alert('your browser failed to load that document, with the following error: ' + target.error.code);
 			return;
 		}
 
