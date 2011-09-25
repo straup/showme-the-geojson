@@ -35,6 +35,10 @@ body {
     margin:25px;
     font-size: small;
     width: 35%;
+    overflow-x:none;
+    overflow-y:auto;
+    height: 350px;
+    max-height:350px;
 }
 
 .sm_load_header {
