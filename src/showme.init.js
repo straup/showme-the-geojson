@@ -15,7 +15,7 @@ function sm_init(){
 
 	has_filereader = (typeof(FileReader) !== "undefined") ? 1 : 0;
 
-	if (navigator.userAgent.toLowerCase().indexOf('chrome') == -1){
+	if (navigator.userAgent.toLowerCase().indexOf('chrome') !== -1){
 		has_filereader = 0;
 	}
 
