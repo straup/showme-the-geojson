@@ -7,6 +7,16 @@ var properties = {};
 
 function sm_init(){
 
+	if (typeof FileReader == "undefined"){
+		var input = document.getElementById("load_file");
+		//input.style.display = "none";
+
+		input.setAttribute("type", "text");
+		input.setAttribute("value", "disabled (by your browser)");
+		input.setAttribute("disabled", "disabled");
+		input.setAttribute("style", "font-style:italic;background-color:transparent;border:none;");
+	}
+
 	// defer this until we actually have an extent/document to work with?
 
 	var svg = org.polymaps.svg("svg");
@@ -24,19 +34,10 @@ function sm_init(){
 	var controls = org.polymaps.interact();
 	map.add(controls);
 
-	var hash = org.polymaps.hash();
-	map.add(hash);
-
 	var compass = org.polymaps.compass();
 	compass.zoom("small");
 	compass.pan("none");
 	map.add(compass);
-
-    /*
-	if (uri){
-		sm_load_uri(uri);
-	}
-	*/
 
 	sm_extents_jumpto();
 }

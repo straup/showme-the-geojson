@@ -45,6 +45,7 @@ function sm_load_files(files){
 
 	var count_files = files.length;
 
+console.log("count " + count_files);
 	for (var i=0; i < count_files; i++){
 		sm_load_file(files[i]);
 	}
