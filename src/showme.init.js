@@ -1,5 +1,6 @@
 var map = null;
 var map_extent = null;
+var extent_timeout = null;
 
 var documents = {};
 var extents = {};

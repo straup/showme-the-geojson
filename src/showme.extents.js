@@ -6,7 +6,11 @@ function sm_extents_set_onload(uri){
 
 	if (! extents[uri]){
 
-		setTimeout(function(){
+		if (extent_timeout){
+			clearTimeout(extent_timeout);
+		}
+
+		extent_timeout = setTimeout(function(){
 			sm_extents_set_onload(uri);
 		}, 200);
 
