@@ -7,10 +7,10 @@ var properties = {};
 
 function sm_init(){
 
+	// Oh, Safari...
+
 	if (typeof FileReader == "undefined"){
 		var input = document.getElementById("load_file");
-		//input.style.display = "none";
-
 		input.setAttribute("type", "text");
 		input.setAttribute("value", "disabled (by your browser)");
 		input.setAttribute("disabled", "disabled");
