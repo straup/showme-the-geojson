@@ -50,7 +50,7 @@ body {
 .sm_load_form {
 	display:none;
 	border:1px solid #ccc;
-	background-image: url('dot.gif');
+	background-image: url('https://github.com/straup/showme-the-geojson/raw/0f8b14b7bb61564d4d96c5e8d00e94aaba9fac78/www/dot.gif');
 	padding:25px;
 	padding-bottom:15px;
 }
