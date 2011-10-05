@@ -31,7 +31,7 @@
 <label for="load_file">load one or more documents from your computer</label><br />
 <input type="file" id="load_file" size="40" multiple /><br /><br />
 <label for="load_uri">load a document from the web</label><br />
-<input type="text" id="load_uri" size="50" /><br /><br />
+<input type="text" id="load_uri" size="50" value="http://woe.spum.org/id/44418/shape.js" /><br /><br />
 <div id="load_buttons">
 <input type="submit" value="SHOW ME NOW!"/>
 <input type="submit" onclick="sm_form_toggle('close'); return false;" value="OR NOT..."/>
@@ -54,6 +54,21 @@
 
     <div class="description">
       <p>Show me the GeoJSON is a bespoke web application for loading and displaying <a href="http://geojson.org/">GeoJSON</a> files on a map.</p>
+
+      <p>It can load remote GeoJSON files (assuming that the host they are being served from has enabled <a href="http://www.w3.org/TR/cors/">CORS</a> support).</p>
+
+      <p>On browsers that support the <a href="http://www.w3.org/TR/FileAPI/">File API</a> it can load GeoJSON files locally from disk. (For intents and purposes this means <a href="http://www.mozilla.org/firefox/">Firefox</a> and <a href="http://www.opera.com/">Opera</a> at the moment.)</p>
+
+      <p>As each GeoJSON document is loaded the map is zoomed to the maximum extent of all the features (points, polygons, etc.) listed in all the documents. As you mouse over each feature any properties defined for that element will be displayed in the sidebar on the left-hand side. If you click on a feature any properties will be displayed in a modal dialog for easy copy-pasting.</p>
+
+      <p>By default, Show Me the GeoJSON is meant to run as <a href="https://github.com/straup/showme-the-geojson/tree/master/www">a stand-alone web application</a> although it can also be embedded in a web page with other stuff. Like this page, for example. Take a look at the <a href="https://github.com/straup/showme-the-geojson/tree/gh-pages">source code</a> for details.</p>
+
+      <p>It currently lacks the necessary spit and polish in the visual design and colour palette departments but otherwise works. It doesn't do much but then again it isn't meant to either.</p>
+
+      <p>If you have geographic data in a format other GeoJSON you can probably convert it using the <a href="http://www.gdal.org/ogr2ogr.html">ogr2ogr</a> command line tool. If you had an ESRI shapefile called <code>example.shp</code> you would create a GeoJSON file (called <code>example.json</code>) like this:</p>
+
+      <pre>$> ogr2ogr -f GeoJSON example.json example.shp</pre>
+
     </div>
 
     <h2>Download</h2>
