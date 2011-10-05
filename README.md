@@ -2,7 +2,9 @@ Show me the GeoJSON
 --
 
 Show me the GeoJSON is a bespoke web application for loading and displaying
-GeoJSON files on a map.
+GeoJSON files on a map. Like this:
+
+http://straup.github.com/showme-the-geojson/
 
 It can load remote GeoJSON files (assuming that the host they are being served
 from has enabled CORS support).
